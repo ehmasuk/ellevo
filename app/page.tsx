@@ -1,9 +1,7 @@
 import CheckoutForm from "@/components/CheckoutForm";
-import ProductDetails from "@/components/ProductDetails";
 
-type Props = {};
 
-function HomePage({}: Props) {
+function HomePage() {
     return (
         <div>
             <CheckoutForm />

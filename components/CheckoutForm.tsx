@@ -2,6 +2,7 @@
 
 import { allDivisions } from "@/database/allDivisions";
 import useGet from "@/hooks/useGet";
+import { CheckoutFormTypes, District } from "@/types";
 import { Form, FormProps, Spin } from "antd";
 import React, { useState } from "react";
 import ProductDetails from "./ProductDetails";
@@ -9,9 +10,8 @@ import ProductDetails from "./ProductDetails";
 function CheckoutForm() {
     const { getData, loading } = useGet();
 
-    const [districts, setDistricts] = useState(null);
-
-    const [upoZillas, setUpoZillas] = useState(null);
+    const [districts, setDistricts] = useState<District[]>([]);
+    const [upoZillas, setUpoZillas] = useState<string[]>([]);
 
     const handleChangeDivision = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedDistrict = await getData({ url: `https://bdapis.com/api/v1.2/division/${e.target.value}` });
@@ -23,20 +23,7 @@ function CheckoutForm() {
         setUpoZillas(selectedDistrict?.data[0]?.upazillas);
     };
 
-    type FieldType = {
-        name?: string;
-        email?: string;
-        mobile?: number;
-
-        division?: string;
-        district?: string;
-        addrsss?: string;
-        color?: string;
-        size?: string;
-        quantity?: number;
-    };
-
-    const handleSubmit: FormProps<FieldType>["onFinish"] = (values) => {
+    const handleSubmit: FormProps<CheckoutFormTypes>["onFinish"] = (values) => {
         console.log("Success:", values);
     };
 

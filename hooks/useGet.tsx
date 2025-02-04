@@ -6,7 +6,7 @@ import { useState } from "react";
 function useGet() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
     const getData = async ({ url }: { url: string }) => {
         setLoading(true);
@@ -16,7 +16,11 @@ function useGet() {
             return res.data;
         } catch (error) {
             console.log(error);
-            setError(error.message);
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError("Something went wrong");
+            }
         } finally {
             setLoading(false);
         }
