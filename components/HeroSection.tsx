@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import Image from "next/image";
 
 const reviews = [
     { id: 1, author: "রাফি আহমেদ", rating: 5, text: "এত সুন্দর ফিনিশিং আর আরামদায়ক কাপড় এক কথায় অসাধারণ! ডেলিভারিও সময়মতো পেয়েছি।" },
@@ -27,7 +28,7 @@ export default function HeroSection() {
                             </a>
                         </div>
                         <div className="md:col-span-1 flex justify-center items-center">
-                            <img src="0010000076843.webp" alt="Dashboard image" className="rounded-t-3xl md:max-h-[500px] max-h-[300px] object-cover" />
+                            <img src="0010000076843.webp" alt="Cover image" className="rounded-t-3xl md:max-h-[500px] max-h-[300px] object-cover" />
                         </div>
                     </div>
                 </section>
