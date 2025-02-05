@@ -1,5 +1,4 @@
 import { Star } from "lucide-react";
-import Image from "next/image";
 
 const reviews = [
     { id: 1, author: "রাফি আহমেদ", rating: 5, text: "এত সুন্দর ফিনিশিং আর আরামদায়ক কাপড় এক কথায় অসাধারণ! ডেলিভারিও সময়মতো পেয়েছি।" },
