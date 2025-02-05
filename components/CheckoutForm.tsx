@@ -34,7 +34,7 @@ function CheckoutForm() {
                     <ProductDetails />
                 </div>
 
-                <div className="lg:col-span-3 ">
+                <div className="lg:col-span-3" id="checkoutForm">
                     <Form onFinish={handleSubmit} className="space-y-8">
                         <div className="space-y-4">
                             <h2 className="md:text-xl text-lg font-semibold text-gray-900 dark:text-white">অর্ডার করতে নিচের ফর্মটি পূরণ করুন 👇</h2>
