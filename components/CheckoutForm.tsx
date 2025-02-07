@@ -3,7 +3,8 @@
 import { allDivisions } from "@/database/allDivisions";
 import useGet from "@/hooks/useGet";
 import { CheckoutFormTypes, District } from "@/types";
-import { Form, FormProps, Spin } from "antd";
+import { Form, FormProps, message, Spin } from "antd";
+import axios from "axios";
 import React, { useState } from "react";
 import ProductDetails from "./ProductDetails";
 
@@ -23,8 +24,17 @@ function CheckoutForm() {
         setUpoZillas(selectedDistrict?.data[0]?.upazillas);
     };
 
-    const handleSubmit: FormProps<CheckoutFormTypes>["onFinish"] = (values) => {
+    const handleSubmit: FormProps<CheckoutFormTypes>["onFinish"] = async (values) => {
         console.log("Success:", values);
+
+        try {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/order`, { ...values, totalPrice: 1200 });
+            message.success("Order created");
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log(error.message);
+            }
+        }
     };
 
     return (
@@ -201,14 +211,11 @@ function CheckoutForm() {
                                         </label>
                                     </div>
                                     <Form.Item name="quantity" rules={[{ required: true, message: "Please select product quantity!" }]}>
-                                        <select className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 disabled:opacity-30">
-                                            <option selected disabled>
-                                                নির্বাচন করুন
-                                            </option>
-                                            <option value="red">1</option>
-                                            <option value="red">2</option>
-                                            <option value="red">3</option>
-                                        </select>
+                                        <input
+                                            type="number"
+                                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 disabled:opacity-30"
+                                            defaultValue={1}
+                                        />
                                     </Form.Item>
                                 </div>
 
@@ -223,8 +230,10 @@ function CheckoutForm() {
                                             <option selected disabled>
                                                 নির্বাচন করুন
                                             </option>
-                                            <option value="red">xl</option>
-                                            <option value="red">xxl</option>
+                                            <option value="M">M</option>
+                                            <option value="L">L</option>
+                                            <option value="XL">XL</option>
+                                            <option value="XXL">XXL</option>
                                         </select>
                                     </Form.Item>
                                 </div>

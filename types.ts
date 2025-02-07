@@ -14,3 +14,12 @@ export type CheckoutFormTypes = {
     size?: string;
     quantity?: number;
 };
+
+
+export type Order = {
+    _id: string;
+    size: string;
+    color: string;
+    quantity: number;
+    totalPrice: number;
+}
