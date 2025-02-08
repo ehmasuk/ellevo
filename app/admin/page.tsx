@@ -1,11 +1,15 @@
 "use client";
 
+import Loader from "@/components/Loader";
 import useGet from "@/hooks/useGet";
 import { Order } from "@/types";
+import { Modal } from "antd";
+import axios from "axios";
+import moment from "moment";
 import { useEffect, useState } from "react";
 
 function AdminPage() {
-    const { getData, data } = useGet();
+    const { getData, data, loading } = useGet();
 
     const [allOrders, setAllOrders] = useState<null | Order[]>(null);
 
@@ -19,8 +23,86 @@ function AdminPage() {
         getData({ url: `${process.env.NEXT_PUBLIC_API_URL}/order` });
     }, []);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalLoading, setIsModalLoading] = useState(false);
+    const [modalInfo, setModalInfo] = useState<null | Order>(null);
+
+    const showModal = async (id: string) => {
+        setIsModalOpen(true);
+        setIsModalLoading(true);
+
+        try {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/order?id=${id}`);
+            setModalInfo(res.data);
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log(error.message);
+            } else {
+                console.log("cannot get order");
+            }
+        } finally {
+            setIsModalLoading(false);
+        }
+    };
+
     return (
         <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+            <Loader loading={loading} />
+
+            <Modal loading={isModalLoading} open={isModalOpen} onCancel={() => setIsModalOpen(false)} centered={true} cancelButtonProps={{ style: { display: "none" } }} width={800}>
+                <div className="py-3 sm:py-5 sm:gap-4 sm:px-6 grid grid-cols-2">
+                    <div>
+                        <h3 className="text-lg leading-6 font-medium text-gray-900">Order Details</h3>
+                        <p className="mt-1 max-w-2xl text-sm text-gray-500">#{modalInfo?._id}</p>
+                    </div>
+                    <div>
+                        <span className="bg-yellow-100 uppercase text-yellow-800 animate-pulse font-medium me-2 px-2.5 py-0.5 rounded-sm inline-block">{modalInfo?.status}</span>
+                    </div>
+                </div>
+                <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
+                    <dl className="sm:divide-y sm:divide-gray-200 grid grid-cols-2">
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">Full name</dt>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{modalInfo?.name}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">Email address</dt>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{modalInfo?.email || "--"}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">Phone number</dt>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{modalInfo?.mobile}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">Size</dt>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{modalInfo?.size}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">Color</dt>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{modalInfo?.color}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">Quantity</dt>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{modalInfo?.quantity}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">Total price</dt>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{modalInfo?.totalPrice}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">Date</dt>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{moment(modalInfo?.createdAt).format("ll")}</dd>
+                        </div>
+                        <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 col-span-2 sm:gap-4 sm:px-6">
+                            <dt className="text-sm font-medium text-gray-500">Address</dt>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 gap-4 sm:col-span-2">
+                                {modalInfo?.division}, {modalInfo?.district}, {modalInfo?.upozilla}, {modalInfo?.address}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </Modal>
+
             <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
                 {/* Start coding here */}
                 <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
@@ -122,10 +204,10 @@ function AdminPage() {
                                         Order Id
                                     </th>
                                     <th scope="col" className="px-4 py-3">
-                                        Size
+                                        Date
                                     </th>
                                     <th scope="col" className="px-4 py-3">
-                                        Color
+                                        Status
                                     </th>
                                     <th scope="col" className="px-4 py-3">
                                         Quantity
@@ -143,11 +225,13 @@ function AdminPage() {
                                     return (
                                         <tr key={index} className="border-b">
                                             <td className="px-4 py-3">{item._id}</td>
-                                            <td className="px-4 py-3">{item.size}</td>
-                                            <td className="px-4 py-3">{item.color}</td>
+                                            <td className="px-4 py-3">{moment(item.createdAt).format("LL")}</td>
+                                            <td className="px-4 py-3">{item.status}</td>
                                             <td className="px-4 py-3">{item.quantity}</td>
                                             <td className="px-4 py-3">{item.totalPrice}</td>
-                                            <td className="px-4 py-3 text-blue-500 cursor-pointer">Details</td>
+                                            <td className="px-4 py-3 text-blue-500 cursor-pointer" onClick={() => showModal(item?._id)}>
+                                                Details
+                                            </td>
                                         </tr>
                                     );
                                 })}

@@ -1,15 +1,21 @@
 "use client";
 
+import Loader from "@/components/Loader";
 import { allDivisions } from "@/database/allDivisions";
 import useGet from "@/hooks/useGet";
 import { CheckoutFormTypes, District } from "@/types";
-import { Form, FormProps, message, Spin } from "antd";
+import { Form, FormProps, InputNumber, message, Spin } from "antd";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import ProductDetails from "./ProductDetails";
 
 function CheckoutForm() {
     const { getData, loading } = useGet();
+
+    const router = useRouter();
+
+    const [orderLoding, setOrderLoading] = useState<boolean>(false);
 
     const [districts, setDistricts] = useState<District[]>([]);
     const [upoZillas, setUpoZillas] = useState<string[]>([]);
@@ -25,27 +31,33 @@ function CheckoutForm() {
     };
 
     const handleSubmit: FormProps<CheckoutFormTypes>["onFinish"] = async (values) => {
-        console.log("Success:", values);
+        setOrderLoading(true);
 
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/order`, { ...values, totalPrice: 1200 });
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/order`, { ...values, totalPrice: 1200 });
+
             message.success("Order created");
+            router.push(`/order-success/${res?.data?._id}`);
         } catch (error) {
             if (error instanceof Error) {
                 console.log(error.message);
             }
+            message.error("Something went wrong");
+        } finally {
+            setOrderLoading(false);
         }
     };
 
     return (
         <section className="bg-white">
+            <Loader loading={orderLoding} />
             <div className="grid lg:grid-cols-5 gap-10 max-w-7xl p-8 mx-auto">
                 <div className="lg:col-span-2 space-y-6">
                     <ProductDetails />
                 </div>
 
                 <div className="lg:col-span-3" id="checkoutForm">
-                    <Form onFinish={handleSubmit} className="space-y-8">
+                    <Form onFinish={handleSubmit} initialValues={{ quantity: 1 }} className="space-y-8">
                         <div className="space-y-4">
                             <h2 className="md:text-xl text-lg font-semibold text-gray-900 dark:text-white">অর্ডার করতে নিচের ফর্মটি পূরণ করুন 👇</h2>
                             <div className="grid lg:grid-cols-2 gap-4">
@@ -210,12 +222,8 @@ function CheckoutForm() {
                                             Products Quantity
                                         </label>
                                     </div>
-                                    <Form.Item name="quantity" rules={[{ required: true, message: "Please select product quantity!" }]}>
-                                        <input
-                                            type="number"
-                                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 disabled:opacity-30"
-                                            defaultValue={1}
-                                        />
+                                    <Form.Item name="quantity">
+                                        <InputNumber size="large" min={1} max={10} />
                                     </Form.Item>
                                 </div>
 
@@ -261,9 +269,9 @@ function CheckoutForm() {
                                     <li className="flex py-6">
                                         <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
                                             <img
-                                                src="https://tailwindui.com/plus/img/ecommerce-images/shopping-cart-page-04-product-01.jpg"
+                                                src="0010000076843.webp"
                                                 alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt."
-                                                className="size-full object-cover"
+                                                className="size-full object-cover object-top"
                                             />
                                         </div>
                                         <div className="ml-4 flex flex-1 flex-col">

@@ -13,6 +13,7 @@ const OrderSchema = new mongoose.Schema(
         size: String,
         email: String,
         totalPrice: Number,
+        status: String,
     },
     { timestamps: true }
 );

@@ -15,11 +15,20 @@ export type CheckoutFormTypes = {
     quantity?: number;
 };
 
-
 export type Order = {
     _id: string;
+    name: string;
+    mobile: number;
+    division: string;
+    district: string;
+    upozilla: string;
+    address: string;
+    email?: string;
     size: string;
     color: string;
     quantity: number;
     totalPrice: number;
-}
+    createdAt?: string;
+    updatedAt?: string;
+    status: string;
+};
