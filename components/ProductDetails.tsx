@@ -52,7 +52,7 @@ function ProductDetails() {
                     <div className="flex items-center flex-wrap gap-4">
                         <h4 className="text-lg font-semibold">Tk 1250</h4>
                         <p className="text-gray-500 text-lg">
-                            <del>tk 16</del>
+                            <del>1750 tk</del>
                         </p>
                     </div>
                 </div>
@@ -79,15 +79,13 @@ function ProductDetails() {
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 max-w-80 mt-10">
-                        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
+                        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4">
                             <div className="flex items-start">
                                 <div className="flex h-5 items-center">
                                     <input
-                                        id="dhl"
-                                        aria-describedby="dhl-text"
                                         type="radio"
                                         name="delivery-method"
-                                        className="h-4 w-4 border-gray-300 bg-white text-blue-600 dark:border-gray-600 dark:bg-gray-700"
+                                        className="h-4 w-4 border-gray-300 bg-white text-blue-600"
                                         defaultChecked
                                     />
                                 </div>

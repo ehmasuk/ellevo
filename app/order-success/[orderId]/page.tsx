@@ -37,43 +37,58 @@ function OrderSuccess() {
                         Order ID: <span className="font-semibold">#{order?._id}</span>
                     </p>
                     <div className="mt-4 space-y-4">
-                        <div className="flex items-center bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <Image width={100} height={100} alt="Perfume" src="/0010000076843.webp" className="w-16 h-16 object-cover rounded-md object-top" />
-                            <div className="ml-4 flex-1">
+                        <div className="flex gap-3 bg-gray-50 p-4 rounded-lg shadow-sm">
+                            <Image width={100} height={100} alt="Perfume" src="/0010000076843.webp" className="w-20 h-32 object-contain rounded-md object-top" />
+                            <div className="ml-4 flex-1 space-y-2">
                                 <p className="font-semibold">Black Embroidered and Striped Joysree Silk Panjabi</p>
-                                <p className="text-gray-600 text-sm my-2">
+                                <p className="text-gray-600 text-sm">
                                     QTY: <b>{order?.quantity}</b>
                                 </p>
                                 <p className="text-gray-600 text-sm">
                                     Color: <b>{order?.color}</b>
                                 </p>
+                                <p className="text-gray-600 text-sm">
+                                    Size: <b>{order?.size}</b>
+                                </p>
                             </div>
-                            <p className="font-semibold">$52.00</p>
+                            <p className="font-semibold">1200 tk</p>
                         </div>
                     </div>
                 </div>
                 <div className="mt-6 p-4 bg-gray-50 rounded-lg space-y-6">
                     <div className="flex justify-between text-slate-800">
-                        <span>Subtotal</span>
-                        <span>$180.00</span>
+                        <span>Product price</span>
+                        <span>1200 tk</span>
+                    </div>
+                    <div className="flex justify-between text-slate-800">
+                        <span>Quantiry</span>
+                        <span>{order?.quantity}</span>
                     </div>
                     <div className="flex justify-between text-slate-800">
                         <span>Delivery Charge</span>
-                        <span>150 tk</span>
-                    </div>
-                    <div className="flex justify-between text-slate-800">
-                        <span>Tax Fee</span>
-                        <span>$5.00</span>
-                    </div>
-                    <div className="flex justify-between text-slate-800">
-                        <span>Discount</span>
-                        <span>00</span>
+                        <span>{order?.delivaryCharge} tk</span>
                     </div>
                     <hr className="my-2" />
                     <div className="flex justify-between font-semibold text-lg text-indigo-600">
                         <span>Total</span>
                         <span>{order?.totalPrice} tk</span>
                     </div>
+                </div>
+                <div className="flex gap-4 items-center mt-5 justify-center">
+                    <button
+                        type="button"
+                        className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                    >
+                        Download invoice
+                    </button>
+                    <a href="/">
+                        <button
+                            type="button"
+                            className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                        >
+                            Return to homepage
+                        </button>
+                    </a>
                 </div>
             </div>
         </div>

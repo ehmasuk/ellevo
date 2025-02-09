@@ -4,12 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 connectDb();
 export const POST = async (req: NextRequest) => {
     try {
-        const { name, totalPrice, email, mobile, division, district, upozilla, address, color, quantity, size } = await req.json();
+        const { name, totalPrice, email, mobile, division, district, upozilla, address, color, quantity, size, delivaryCharge, productPrice } = await req.json();
 
         if (!name || !mobile || !division || !district || !upozilla || !address || !color || !quantity || !size || !totalPrice) {
             return NextResponse.json("Required all fields", { status: 404 });
         }
-        const order = await OrdersModel.create({ name, email, mobile, division, district, upozilla, address, color, quantity, size, totalPrice, status: "pending" });
+        const order = await OrdersModel.create({ name, email, mobile, division, district, upozilla, address, color, quantity, size, totalPrice, status: "pending", delivaryCharge, productPrice });
         if (!order) {
             return NextResponse.json("Cannot create order", { status: 404 });
         }

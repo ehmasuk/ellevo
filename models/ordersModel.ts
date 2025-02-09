@@ -14,6 +14,8 @@ const OrderSchema = new mongoose.Schema(
         email: String,
         totalPrice: Number,
         status: String,
+        productPrice: Number,  
+        delivaryCharge: Number,
     },
     { timestamps: true }
 );

@@ -31,4 +31,6 @@ export type Order = {
     createdAt?: string;
     updatedAt?: string;
     status: string;
+    delivaryCharge: number;
+    productPrice: number;
 };

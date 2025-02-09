@@ -1,6 +1,6 @@
 function Loader({ loading }: { loading: boolean }) {
     return (
-        <div className={`${loading ? "block" : "hidden"} fixed left-0 top-0 h-screen w-full flex items-center justify-center bg-[#ffffffaf]`}>
+        <div className={`${loading ? "block" : "hidden"} fixed left-0 top-0 z-50 h-screen w-full flex items-center justify-center bg-[#ffffffaf]`}>
             <div className="loader"></div>
         </div>
     );

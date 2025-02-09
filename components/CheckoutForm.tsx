@@ -21,6 +21,11 @@ function CheckoutForm() {
     const [upoZillas, setUpoZillas] = useState<string[]>([]);
 
     const handleChangeDivision = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        if (e.target.value == "Dhaka") {
+            setDelivaryCharge(50);
+        } else {
+            setDelivaryCharge(150);
+        }
         const selectedDistrict = await getData({ url: `https://bdapis.com/api/v1.2/division/${e.target.value}` });
         setDistricts(selectedDistrict?.data);
     };
@@ -30,23 +35,26 @@ function CheckoutForm() {
         setUpoZillas(selectedDistrict?.data[0]?.upazillas);
     };
 
+    const [form] = Form.useForm();
+
     const handleSubmit: FormProps<CheckoutFormTypes>["onFinish"] = async (values) => {
         setOrderLoading(true);
-
         try {
-            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/order`, { ...values, totalPrice: 1200 });
-
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/order`, { ...values, totalPrice: 1200 * quantity + delivaryCharge, delivaryCharge, productPrice: 1200 });
             message.success("Order created");
             router.push(`/order-success/${res?.data?._id}`);
+            form.resetFields();
         } catch (error) {
             if (error instanceof Error) {
                 console.log(error.message);
             }
             message.error("Something went wrong");
-        } finally {
-            setOrderLoading(false);
         }
     };
+
+    const [delivaryCharge, setDelivaryCharge] = useState<number>(50);
+
+    const [quantity, setQuantity] = useState<number>(1);
 
     return (
         <section className="bg-white">
@@ -57,7 +65,7 @@ function CheckoutForm() {
                 </div>
 
                 <div className="lg:col-span-3" id="checkoutForm">
-                    <Form onFinish={handleSubmit} initialValues={{ quantity: 1 }} className="space-y-8">
+                    <Form form={form} onFinish={handleSubmit} initialValues={{ quantity: 1 }} className="space-y-8">
                         <div className="space-y-4">
                             <h2 className="md:text-xl text-lg font-semibold text-gray-900 dark:text-white">অর্ডার করতে নিচের ফর্মটি পূরণ করুন 👇</h2>
                             <div className="grid lg:grid-cols-2 gap-4">
@@ -69,7 +77,7 @@ function CheckoutForm() {
                                         <input
                                             type="text"
                                             id="your_name"
-                                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                                             placeholder="নাম"
                                         />
                                     </Form.Item>
@@ -82,23 +90,22 @@ function CheckoutForm() {
                                     <Form.Item name="mobile" className="!m-0" rules={[{ required: true, message: "Please enter your active mobile number!" }]}>
                                         <div className="flex items-center">
                                             <button
-                                                className="z-10 inline-flex shrink-0 items-center rounded-s-lg border border-gray-300 bg-gray-100 px-4 py-2.5 text-center text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                                                className="z-10 inline-flex shrink-0 items-center rounded-s-lg border border-gray-300 bg-gray-100 px-4 py-3 text-center text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus:ring-4 focus:ring-gray-100"
                                                 type="button"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="me-2 h-4 w-4" viewBox="0 0 36 36">
                                                     <path fill="#006a4d" d="M36 27a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4z" />
                                                     <circle cx="16" cy="17.5" r="7" fill="#f42a41" />
                                                 </svg>
-                                                +880
                                             </button>
 
                                             <div className="relative w-full">
                                                 <input
                                                     type="text"
                                                     id="mobile"
-                                                    className="z-20 block w-full rounded-e-lg border border-s-0 border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:border-s-gray-700  dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500"
-                                                    // pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                                                    placeholder="123-456-7890"
+                                                    className="z-20 block w-full rounded-e-lg border border-s-0 border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                                    pattern="/(^(\+8801|8801|01|008801))[1|3-9]{1}(\d){8}$/"
+                                                    placeholder="01.."
                                                 />
                                             </div>
                                         </div>
@@ -114,7 +121,7 @@ function CheckoutForm() {
                                     <Form.Item name="division" rules={[{ required: true, message: "Please select division!" }]}>
                                         <select
                                             id="select-1"
-                                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                                             onChange={handleChangeDivision}
                                         >
                                             <option disabled selected>
@@ -140,7 +147,7 @@ function CheckoutForm() {
                                         <Spin spinning={loading}>
                                             <select
                                                 id="select-2"
-                                                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 disabled:opacity-50"
+                                                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500disabled:opacity-50"
                                                 disabled={districts ? false : true}
                                                 onChange={handleChangeDistrict}
                                             >
@@ -168,7 +175,7 @@ function CheckoutForm() {
                                         <Spin spinning={loading}>
                                             <select
                                                 id="select-3"
-                                                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 disabled:opacity-50"
+                                                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50"
                                                 disabled={upoZillas ? false : true}
                                             >
                                                 <option selected disabled>
@@ -193,7 +200,7 @@ function CheckoutForm() {
                                     <Form.Item name="address" rules={[{ required: true, message: "Please enter your address!" }]}>
                                         <textarea
                                             id="address"
-                                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                                             placeholder="ঠিকানা"
                                         ></textarea>
                                     </Form.Item>
@@ -206,7 +213,7 @@ function CheckoutForm() {
                                         </label>
                                     </div>
                                     <Form.Item name="color" rules={[{ required: true, message: "Please select color!" }]}>
-                                        <select className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 disabled:opacity-30">
+                                        <select className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-30">
                                             <option selected disabled>
                                                 নির্বাচন করুন
                                             </option>
@@ -218,23 +225,23 @@ function CheckoutForm() {
 
                                 <div>
                                     <div className="mb-2 flex items-center gap-2">
-                                        <label htmlFor="select-3" className="block text-sm font-medium text-gray-900 dark:text-white">
+                                        <label htmlFor="select-3" className="block text-sm font-medium text-gray-900">
                                             Products Quantity
                                         </label>
                                     </div>
                                     <Form.Item name="quantity">
-                                        <InputNumber size="large" min={1} max={10} />
+                                        <InputNumber size="large" min={1} onChange={(e) => setQuantity(e || 1)} />
                                     </Form.Item>
                                 </div>
 
                                 <div>
                                     <div className="mb-2 flex items-center gap-2">
-                                        <label htmlFor="select-3" className="block text-sm font-medium text-gray-900 dark:text-white">
+                                        <label htmlFor="select-3" className="block text-sm font-medium text-gray-900">
                                             Products size
                                         </label>
                                     </div>
                                     <Form.Item name="size" rules={[{ required: true, message: "Please select products size!" }]}>
-                                        <select className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 disabled:opacity-30">
+                                        <select className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-30">
                                             <option selected disabled>
                                                 নির্বাচন করুন
                                             </option>
@@ -254,8 +261,8 @@ function CheckoutForm() {
                                         <input
                                             type="email"
                                             id="email"
-                                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                            placeholder="name@flowbite.com"
+                                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                            placeholder="name@example.com"
                                         />
                                     </Form.Item>
                                 </div>
@@ -268,24 +275,20 @@ function CheckoutForm() {
                                 <ul>
                                     <li className="flex py-6">
                                         <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                            <img
-                                                src="0010000076843.webp"
-                                                alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt."
-                                                className="size-full object-cover object-top"
-                                            />
+                                            <img src="0010000076843.webp" alt="Salmon" className="size-full object-cover object-top" />
                                         </div>
                                         <div className="ml-4 flex flex-1 flex-col">
                                             <div>
                                                 <div className="flex justify-between text-base font-medium text-gray-900">
                                                     <h3>
-                                                        <a href="#">Black Embroidered and Striped Joysree Silk Panjabi</a>
+                                                        <p>Black Embroidered and Striped Joysree Silk Panjabi</p>
                                                     </h3>
-                                                    <p className="ml-4">$90.00</p>
+                                                    <p className="ml-4">1200 tk</p>
                                                 </div>
-                                                <p className="mt-1 text-sm text-gray-500">Salmon</p>
+                                                <p className="mt-1 text-sm text-gray-500">Blue</p>
                                             </div>
                                             <div className="flex flex-1 items-end justify-between text-sm">
-                                                <p className="text-gray-500">Qty 1</p>
+                                                <p className="text-gray-500">Qty {quantity}</p>
                                             </div>
                                         </div>
                                     </li>
@@ -295,15 +298,20 @@ function CheckoutForm() {
                             <div className="border-t border-gray-200 py-6">
                                 <div className="flex justify-between text-base font-medium text-gray-600">
                                     <p>Product price</p>
-                                    <p>$1250</p>
+                                    <p>1200 tk</p>
+                                </div>
+                                <div className="flex my-5 justify-between text-base font-medium text-gray-600">
+                                    <p>Quantity</p>
+                                    <p>{quantity}</p>
                                 </div>
                                 <div className="flex my-5 justify-between text-base font-medium text-gray-600">
                                     <p>Delivary charge</p>
-                                    <p>$262.00</p>
+                                    <p>{delivaryCharge} tk</p>
                                 </div>
+
                                 <div className="flex font-semibold justify-between text-base text-gray-900">
                                     <p>Total</p>
-                                    <p>$262.00</p>
+                                    <p>{1200 * quantity + delivaryCharge} tk</p>
                                 </div>
 
                                 <div className="mt-6">
