@@ -1,6 +1,6 @@
 # Ellevo
 
-Ellevo is a simple landing page designed to sell a single product. Built with Next.js and Tailwind CSS, it provides a clean and responsive interface to showcase your product effectively.
+Ellevo is a simple landing page designed to sell a single product. Built with Next.js and Tailwind CSS, it provides a clean and responsive interface to showcase product effectively.
 
 ## Live demo
 
@@ -8,7 +8,7 @@ https://ellevo.vercel.app
 
 ## Features
 
-- **Product Showcase**: Highlight your product with compelling visuals and descriptions.
+- **Product Showcase**: Highlight product with compelling visuals and descriptions.
 - **Responsive Design**: Optimized for various devices using Tailwind CSS.
 - **Fast Loading**: Leveraging Next.js for optimized performance and quick load times.
 
@@ -65,7 +65,7 @@ Or using yarn:
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
+Open [http://localhost:3000](http://localhost:3000) in browser to view the application.
 
 ### Building for Production
 
@@ -119,7 +119,7 @@ yarn start
 
 ## Contributing
 
-Contributions are welcome! Please fork the repository and create a pull request with your changes.
+Contributions are welcome! Please fork the repository and create a pull request with changes.
 
 ## License
 
