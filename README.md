@@ -2,6 +2,10 @@
 
 Ellevo is a simple landing page designed to sell a single product. Built with Next.js and Tailwind CSS, it provides a clean and responsive interface to showcase your product effectively.
 
+## Live demo
+
+https://ellevo.vercel.app
+
 ## Features
 
 - **Product Showcase**: Highlight your product with compelling visuals and descriptions.
